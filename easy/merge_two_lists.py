@@ -42,20 +42,29 @@ class Solution:
       while idx1 or idx2:
         curr_val1 = idx1.val if idx1 else None
         curr_val2 = idx2.val if idx2 else None
-
-        print(curr_val1)
-        if curr_val2 is None or curr_val1 <= curr_val2:
+        if curr_val2 is None:
           if result is None:
-            result = idx1
-          # else:
-          #   self.appendList(result, curr_val1)
-
+            result = ListNode(curr_val1)
+          else:
+            self.appendList(result, curr_val1)
           idx1 = idx1.next
-        elif curr_val1 is None or curr_val2 < curr_val1:
+        elif curr_val1 is None:
           if result is None:
-            result = idx2
-          # else:
-          #   self.appendList(result, curr_val2)
+            result = ListNode(curr_val2)
+          else:
+            self.appendList(result, curr_val2)
+          idx2 = idx2.next
+        elif curr_val1 <= curr_val2:
+          if result is None:
+            result = ListNode(curr_val1)
+          else:
+            self.appendList(result, curr_val1)
+          idx1 = idx1.next
+        elif curr_val2 < curr_val1:
+          if result is None:
+            result = ListNode(curr_val2)
+          else:
+            self.appendList(result, curr_val2)
           idx2 = idx2.next
       return result
 
@@ -71,10 +80,10 @@ list2.next.next = ListNode(4)
 
 r = sol.mergeTwoLists(list1, list2)
 
-# def traverse_list_nodes(head):
-#   curr_node = head
-#   while curr_node:
-#     print(curr_node.val)
-#     curr_node = curr_node.next
+def traverse_list_nodes(head):
+  curr_node = head
+  while curr_node:
+    print(curr_node.val)
+    curr_node = curr_node.next
 
-# traverse_list_nodes(r)
+traverse_list_nodes(r)
