@@ -38,8 +38,6 @@ class Solution:
           else:
             curr_word_idx += 1
             curr_abbr_idx += 1
-        elif char == '0':
-          continue
         elif char.isdigit():
           next_char = curr_abbr_idx
           while next_char < len(abbr) and abbr[next_char].isdigit():
@@ -55,8 +53,10 @@ class Solution:
           else:
             curr_word_idx += digit
             curr_abbr_idx = next_char
-      return True
-
+      if curr_word_idx == len(word):
+        return True
+      else:
+        return False
 
 sol = Solution()
 # print(sol.validWordAbbreviation("substitution", "s10n")) # True
