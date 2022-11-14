@@ -24,7 +24,7 @@ Algorithm:
     - 8, 3, '.', '6', '.', '.', '.', '9', '8
     - Loop in increments of 3
       - Looping row += 3
-      - Looing col += 3
+    - Then I want to set first three cols as box1, next three box2
   - Check the digits are distinct
   - Return false if they are not
 
@@ -106,12 +106,15 @@ board2 = [["8","3",".",".","7",".",".",".","."]
 def generateBoxes(board):
   boxes = [[] for _ in range(9)]
   # generate boxes every three rows
-  for row_idx in range(0, len(board), 3):
-    box = []
-    for row in range(row_idx, row_idx + 3):
+  for box_idx in range(0, len(board), 3):
+    for row_idx in range(box_idx, box_idx + 3):
+      for col_idx in range(0, 9, 3):
+        # print(board[row_idx][col_idx:col_idx+3])
+        boxes[row_idx].append(board[row_idx][col_idx:col_idx+3])
+  return boxes
 
 
 
 
 
-# generateBoxes(board2)
+print(generateBoxes(board2))
