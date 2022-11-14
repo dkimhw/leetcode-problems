@@ -11,14 +11,9 @@ Output: boolean
 Algorithm:
 - Loop through each row: check that the digits are distinct
   - Return false if they are distinct
-- Loop through each col: check that the digits are disticnt
-  - generate columns:
-    - loop through the board
-    - for each row:
-      - append to the subarray that matches the current row index
-      - so if we are at idx 3 - this is col 4 we append:
-        - cols[3].append(row[3])
-  - Return false if they are distinct
+  - Generate column for each row we loop through
+    - current index for all nine rows [ curr[idx] for row in board ]
+    - Return false if they are distinct
 - Find the appropriate 3 x 3 box:
   - generate boxes (one list)
     - 8, 3, '.', '6', '.', '.', '.', '9', '8
@@ -51,22 +46,22 @@ class Solution:
         digit_maps[digit] = 1
     return True
 
-  def generateCols(self, board: List[List[str]]) -> List[List[str]]:
-    cols = [[] for _ in range(9)]
-    for row in board:
-      for idx in range(len(row)):
-        cols[idx].append(row[idx])
-    print(cols)
-    return cols
+  def generateBoxes(self, board: List[List[str]]) -> List[List[str]]:
+    results = []
+    for row in range(0, 9, 3):
+      for col in range(0, 9, 3):
+        results.append(board[row][col:col+3] + board[row+1][col:col+3] + board[row+2][col:col+3])
+    return results
 
   def isValidSudoku(self, board: List[List[str]]) -> bool:
-    # Check rows
-    for row in board:
-      if not self.checkDistinct(row):
+    # Check rows & cols on one loop
+    for idx, row in enumerate(board):
+      col = [row[idx] for row in board]
+      if (self.checkDistinct(row) == False or self.checkDistinct(col) == False):
         return False
 
-    for col in self.generateCols(board):
-      if not self.checkDistinct(col):
+    for box in self.generateBoxes(board):
+      if not self.checkDistinct(box):
         return False
 
     return True
@@ -88,7 +83,7 @@ board = [["5","3",".",".","7",".",".",".","."]
 ,[".","6",".",".",".",".","2","8","."]
 ,[".",".",".","4","1","9",".",".","5"]
 ,[".",".",".",".","8",".",".","7","9"]]
-#print(sol.isValidSudoku(board)) # true
+print(sol.isValidSudoku(board)) # true
 
 
 board2 = [["8","3",".",".","7",".",".",".","."]
@@ -100,21 +95,4 @@ board2 = [["8","3",".",".","7",".",".",".","."]
 ,[".","6",".",".",".",".","2","8","."]
 ,[".",".",".","4","1","9",".",".","5"]
 ,[".",".",".",".","8",".",".","7","9"]]
-#print(sol.isValidSudoku(board2)) # false
-
-
-def generateBoxes(board):
-  boxes = [[] for _ in range(9)]
-  # generate boxes every three rows
-  for box_idx in range(0, len(board), 3):
-    for row_idx in range(box_idx, box_idx + 3):
-      for col_idx in range(0, 9, 3):
-        # print(board[row_idx][col_idx:col_idx+3])
-        boxes[row_idx].append(board[row_idx][col_idx:col_idx+3])
-  return boxes
-
-
-
-
-
-print(generateBoxes(board2))
+print(sol.isValidSudoku(board2)) # false
