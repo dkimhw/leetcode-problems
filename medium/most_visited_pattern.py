@@ -1,4 +1,5 @@
 """
+https://leetcode.com/problems/analyze-user-website-visit-pattern/
 
 Input:
   - username array
@@ -67,10 +68,20 @@ class Solution:
 
   def get_website_pattern_for_user(self, websites):
     curr_patterns = []
-    for idx in range(len(websites)):
-      if idx + 2 < len(websites):
-        curr_patterns.append(websites[idx:idx+3])
+    def all_patterns_recursive_helper(websites, results, curr_result, last_idx):
+      if len(curr_result) > 3:
+        return
+      if len(curr_result) == 3:
+        results.append(curr_result[:])
+        return
 
+      for idx in range(len(websites)):
+        if idx > last_idx:
+          curr_result.append(websites[idx])
+          all_patterns_recursive_helper(websites, results, curr_result, idx)
+          curr_result.pop()
+
+    all_patterns_recursive_helper(websites, curr_patterns, [], -1)
     return curr_patterns
 
   def count_patterns(self, users):
@@ -84,16 +95,31 @@ class Solution:
   def mostVisitedPattern(self, username: List[str], timestamp: List[int], website: List[str]) -> List[str]:
     users = self.aggregate_users(username, timestamp, website)
     patterns = self.count_patterns(users)
-    return patterns
+    most_viewed_pattern = []
+    most_views = 0
+    for pattern, val in patterns.items():
+      if val > most_views:
+        most_views = val
+        most_viewed_pattern.append(pattern)
+    print(patterns)
+    return most_viewed_pattern[0]
 
 
 sol = Solution()
-u1 = ["joe","joe","joe","james","james","james","james","mary","mary","mary"]
-t1 = [1,2,3,4,5,6,7,8,9,10]
-w1 = ["home","about","career","home","cart","maps","home","home","about","career"]
-print(sol.mostVisitedPattern(u1, t1, w1))
+# u1 = ["joe","joe","joe","james","james","james","james","mary","mary","mary"]
+# t1 = [1,2,3,4,5,6,7,8,9,10]
+# w1 = ["home","about","career","home","cart","maps","home","home","about","career"]
+# print(sol.mostVisitedPattern(u1, t1, w1))
 
+# u2 = ["ua","ua","ua","ub","ub","ub"]
+# t2 = [1,2,3,4,5,6]
+# w2 = ["a","b","a","a","b","c"]
+# print(sol.mostVisitedPattern(u2, t2, w2))
 
+u3 = ["ua","ua","ua","ub","ub","ub"]
+t3 = [1,2,3,4,5,6]
+w3 = ["a","b","c","a","b","a"]
+print(sol.mostVisitedPattern(u3, t3, w3)) # ["a","b","a"]
 
 # def get_website_pattern_for_user(websites):
 #   curr_patterns = []
@@ -106,10 +132,28 @@ print(sol.mostVisitedPattern(u1, t1, w1))
 
 # print(get_website_pattern_for_user(['home', 'cart', 'maps', 'home']))
 
-def get_all_patterns(websites):
-  curr_patterns = []
-  for idx in range(len(websites)):
-    if idx + 2 < len(websites):
-      curr_patterns.append(websites[idx:idx+3])
+"""
+Break conditions
+- if the current pattern is === 3, append and return
+- recursion
+  - loop through each website in order
+  - append a new website
+  - call function itself with the new appeneded website
+  - on return pop added website
+"""
+# r = []
+# def get_all_patterns_recursive_helper(websites, results, curr_result, last_idx):
+#   if len(curr_result) > 3:
+#     return
+#   if len(curr_result) == 3:
+#     results.append(curr_result[:])
+#     return
 
-  return curr_patterns
+#   for idx in range(len(websites)):
+#     if idx > last_idx:
+#       curr_result.append(websites[idx])
+#       get_all_patterns_recursive_helper(websites, results, curr_result, idx)
+#       curr_result.pop()
+
+# print(get_all_patterns(['home', 'cart', 'maps', 'home'], r, [], -1))
+# print(r)
