@@ -32,6 +32,7 @@ I am thinking one potential method might be to aggregate up theses data by usern
   - [home, cart, maps, home]
 
 Algorithm:
+0. Reorder the data based on timestamp (not guaranteed to be in order)
 1. Create a dictionary called `users`
 2. Loop through the three input arrays (choose one)
   - for each username
@@ -50,60 +51,37 @@ Algorithm:
 """
 from typing import List
 from collections import Counter
+from collections import defaultdict
+from itertools import combinations
 
 class Solution:
-  def aggregate_users(self, username: List[str], timestamp: List[int], website: List[str]) -> List[str]:
-    users = {}
-    for idx, u in enumerate(username):
-      if u in users:
-        users[u]['timestamp'].append(timestamp[idx])
-        users[u]['website'].append(website[idx])
-      else:
-        users[u] = {}
-        users[u]['timestamp'] = []
-        users[u]['timestamp'].append(timestamp[idx])
-        users[u]['website'] = []
-        users[u]['website'].append(website[idx])
-    return users
-
-  def get_website_pattern_for_user(self, websites):
-    curr_patterns = []
-    def all_patterns_recursive_helper(websites, results, curr_result, last_idx):
-      if len(curr_result) > 3:
-        return
-      if len(curr_result) == 3:
-        results.append(curr_result[:])
-        return
-
-      for idx in range(len(websites)):
-        if idx > last_idx:
-          curr_result.append(websites[idx])
-          all_patterns_recursive_helper(websites, results, curr_result, idx)
-          curr_result.pop()
-
-    all_patterns_recursive_helper(websites, curr_patterns, [], -1)
-    return curr_patterns
-
-  def count_patterns(self, users):
-    patterns = Counter()
-    for user, _ in users.items():
-      curr_patterns = self.get_website_pattern_for_user(users[user]['website'])
-      for curr_pattern in curr_patterns:
-        patterns[tuple(curr_pattern)] += 1
-    return patterns
-
   def mostVisitedPattern(self, username: List[str], timestamp: List[int], website: List[str]) -> List[str]:
-    users = self.aggregate_users(username, timestamp, website)
-    patterns = self.count_patterns(users)
-    most_viewed_pattern = []
-    most_views = 0
-    for pattern, val in patterns.items():
-      if val > most_views:
-        most_views = val
-        most_viewed_pattern.append(pattern)
-    print(patterns)
-    return most_viewed_pattern[0]
+    # Create tuples as shown in description
+    # The timestamps may not always be pre-ordered (one of the testcases)
+    # Sort first based on user, then time (grouping by user)
+    # This also helps to maintain order of websites visited in the later part of the solution
+    users = defaultdict(list)
+    for user, _, site in sorted(zip(username, timestamp, website), key = lambda x: (x[0],x[1])):
+      users[user].append(site)     # defaultdicts simplify and optimize code
+    patterns = Counter()   # this can also be replaced with a manually created dictionary of counts
 
+		# Get unique 3-sequence (note that website order will automatically be maintained)
+		# Note that we take the set of each 3-sequence for each user as they may have repeats
+		# For each 3-sequence, count number of users
+    for user, sites in users.items():
+      seq_combos = combinations(sites, 3)
+      seq_combos = set(seq_combos)
+      seq_combos = Counter(seq_combos)
+      patterns.update(seq_combos)
+
+		# Re-iterating above step for clarity
+		# 1. first get all possible 3-sequences combinations(sites, 3)
+		# 2. then, count each one once (set)
+		# 3. finally, count the number of times we've seen the 3-sequence for every user (patterns.update(Counter))
+		# - updating a dictionary will update the value for existing keys accordingly (int in this case)
+
+		# get most frequent 3-sequence sorted lexicographically
+    return max(sorted(patterns), key=patterns.get)
 
 sol = Solution()
 # u1 = ["joe","joe","joe","james","james","james","james","mary","mary","mary"]
@@ -116,44 +94,13 @@ sol = Solution()
 # w2 = ["a","b","a","a","b","c"]
 # print(sol.mostVisitedPattern(u2, t2, w2))
 
-u3 = ["ua","ua","ua","ub","ub","ub"]
-t3 = [1,2,3,4,5,6]
-w3 = ["a","b","c","a","b","a"]
-print(sol.mostVisitedPattern(u3, t3, w3)) # ["a","b","a"]
-
-# def get_website_pattern_for_user(websites):
-#   curr_patterns = []
-#   for idx in range(len(websites)):
-#     if idx + 2 < len(websites):
-#       curr_patterns.append(websites[idx:idx+3])
-
-#   return curr_patterns
+# u3 = ["ua","ua","ua","ub","ub","ub"]
+# t3 = [1,2,3,4,5,6]
+# w3 = ["a","b","c","a","b","a"]
+# print(sol.mostVisitedPattern(u3, t3, w3)) # ["a","b","a"]
 
 
-# print(get_website_pattern_for_user(['home', 'cart', 'maps', 'home']))
-
-"""
-Break conditions
-- if the current pattern is === 3, append and return
-- recursion
-  - loop through each website in order
-  - append a new website
-  - call function itself with the new appeneded website
-  - on return pop added website
-"""
-# r = []
-# def get_all_patterns_recursive_helper(websites, results, curr_result, last_idx):
-#   if len(curr_result) > 3:
-#     return
-#   if len(curr_result) == 3:
-#     results.append(curr_result[:])
-#     return
-
-#   for idx in range(len(websites)):
-#     if idx > last_idx:
-#       curr_result.append(websites[idx])
-#       get_all_patterns_recursive_helper(websites, results, curr_result, idx)
-#       curr_result.pop()
-
-# print(get_all_patterns(['home', 'cart', 'maps', 'home'], r, [], -1))
-# print(r)
+u4 = ["h","eiy","cq","h","cq","txldsscx","cq","txldsscx","h","cq","cq"]
+t4 = [527896567,334462937,517687281,134127993,859112386,159548699,51100299,444082139,926837079,317455832,411747930]
+w4 = ["hibympufi","hibympufi","hibympufi","hibympufi","hibympufi","hibympufi","hibympufi","hibympufi","yljmntrclw","hibympufi","yljmntrclw"]
+print(sol.mostVisitedPattern(u4, t4, w4))
