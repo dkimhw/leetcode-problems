@@ -1,0 +1,31 @@
+
+
+from collections import Counter
+from collections import defaultdict
+from itertools import combinations
+
+
+
+
+u1 = ["joe","joe","joe","james","james","james","james","mary","mary","mary"]
+t1 = [1,2,3,4,5,6,7,8,9,10]
+w1 = ["home","about","career","home","cart","maps","home","home","about","career"]
+
+users = defaultdict(list)
+for user, _, site in sorted(zip(u1, t1, w1), key = lambda x: (x[0],x[1])):
+  users[user].append(site)     # defaultdicts simplify and optimize code
+patterns = Counter()   # this can also be replaced with a manually created dictionary of counts
+
+for user, sites in users.items():
+  seq_combos = combinations(sites, 3)
+  seq_combos = set(seq_combos)
+  seq_combos = Counter(seq_combos)
+  patterns.update(seq_combos)
+
+print(patterns)
+
+
+def three_combinations(websites):
+  print(websites)
+
+three_combinations(users)
