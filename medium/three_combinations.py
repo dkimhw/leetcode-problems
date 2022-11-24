@@ -26,6 +26,16 @@ print(patterns)
 
 
 def three_combinations(websites):
-  print(websites)
+  combinations = []
+  def three_combinations_recursive(websites, curr_combination, curr_idx, results):
+    if len(curr_combination) == 3:
+      combinations.append(curr_combination[:])
+
+    for idx, _ in range(len(websites)):
+      print(idx)
+
+  three_combinations_recursive(websites, [], -1, combinations)
+  return combinations
+
 
 three_combinations(users)
