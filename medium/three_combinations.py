@@ -22,20 +22,36 @@ for user, sites in users.items():
   seq_combos = Counter(seq_combos)
   patterns.update(seq_combos)
 
+print(users)
 print(patterns)
 
 
 def three_combinations(websites):
-  combinations = []
+  combinations = Counter()
   def three_combinations_recursive(websites, curr_combination, curr_idx, results):
     if len(curr_combination) == 3:
-      combinations.append(curr_combination[:])
+      t = tuple(curr_combination[:])
+      combinations[t] += 1
+      return
 
-    for idx, _ in range(len(websites)):
-      print(idx)
+    for idx in range(len(websites)):
+      if idx > curr_idx:
+        curr_combination.append(websites[curr_idx])
+        three_combinations_recursive(websites, curr_combination, idx, results)
+        curr_combination.pop()
 
   three_combinations_recursive(websites, [], -1, combinations)
   return combinations
 
+# web1 = ['home', 'cart', 'maps', 'home']
+# print(three_combinations(web1))
 
-three_combinations(users)
+patterns2 = Counter()   # this can also be replaced with a manually created dictionary of counts
+
+for user, sites in users.items():
+  seq_combos = three_combinations(sites)
+  seq_combos = set(seq_combos)
+  seq_combos = Counter(seq_combos)
+  patterns2.update(seq_combos)
+
+print("Patterns2: ", patterns)
