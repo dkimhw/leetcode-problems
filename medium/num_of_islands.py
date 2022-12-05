@@ -53,16 +53,32 @@ class Solution:
     m = len(grid)
     n = len(grid[0])
     if node[0] + 1 <= m:
-      valid_nodes.append(tuple([node[0] + 1, node[1]]))
+      try:
+        if grid[node[0] + 1][node[1]] == '1':
+          valid_nodes.append(tuple([node[0] + 1, node[1]]))
+      except IndexError:
+        pass
 
     if node[0] - 1 >= 0:
-      valid_nodes.append(tuple([node[0] - 1, node[1]]))
+      try:
+        if grid[node[0] - 1][node[1]] == '1':
+          valid_nodes.append(tuple([node[0] - 1, node[1]]))
+      except:
+        pass
 
     if node[1] + 1 <= n:
-      valid_nodes.append(tuple([node[0], node[1] + 1]))
+      try:
+        if grid[node[0]][node[1] + 1] == '1':
+          valid_nodes.append(tuple([node[0], node[1] + 1]))
+      except:
+        pass
 
     if node[1] - 1 >= 0:
-      valid_nodes.append(tuple([node[0], node[1] - 1]))
+      try:
+        if grid[node[0]][node[1] - 1] == '1':
+          valid_nodes.append(tuple([node[0], node[1] - 1]))
+      except:
+        pass
     return valid_nodes
 
   def bfs_islands(self, grid: List[List[str]], starting_node: tuple, not_visited: List[tuple]):
@@ -72,13 +88,14 @@ class Solution:
 
     while len(to_search) > 0:
       curr_node = to_search.pop()
+      not_visited.remove(curr_node)
       searched.add(curr_node)
       neighbors = self.get_neighbor(curr_node, grid)
       for neighbor in neighbors:
-        if neighbor not in searched and grid[curr_node[0]][curr_node[1]] == '1' and neighbor in not_visited:
+        if neighbor not in searched and grid[curr_node[0]][curr_node[1]] and neighbor in not_visited:
           to_search.add(neighbor)
-    print(searched)
-    # Remove from not_visited
+    # print(searched)
+    # print(not_visited)
 
   def numIslands(self, grid: List[List[str]]) -> int:
     final_result = 0
@@ -86,7 +103,17 @@ class Solution:
     for idx in range(len(grid)):
       for jdx in range(len(grid[idx])):
         not_visited.append(tuple([idx, jdx]))
-    print(not_visited)
+
+    while len(not_visited) > 0:
+      curr_node = not_visited[0]
+      if grid[curr_node[0]][curr_node[1]] == '1':
+        self.bfs_islands(grid, curr_node, not_visited)
+        final_result += 1
+      else:
+        not_visited.remove(curr_node)
+
+    return final_result
+
 
 
 sol = Solution()
@@ -97,16 +124,26 @@ grid = [
   ["1","1","0","0","0"],
   ["0","0","0","0","0"]
 ]
-v = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (3, 0), (3, 1), (3, 2), (3, 3), (3, 4)]
-print(sol.bfs_islands(grid, (0, 0), v))
+# v = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (3, 0), (3, 1), (3, 2), (3, 3), (3, 4)]
+# print(sol.bfs_islands(grid, (0, 0), v))
 
-# print(sol.numIslands(grid))
+print(sol.numIslands(grid))
 
 
-# grid2 = [
-#   ["1","1","0","0","0"],
-#   ["1","1","0","0","0"],
-#   ["0","0","1","0","0"],
-#   ["0","0","0","1","1"]
-# ]
-# print(sol.numIslands(grid2))
+grid2 = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+print(sol.numIslands(grid2))
+
+
+grid3 = [
+  ["1","1","1","1","1","1"]
+, ["1","0","0","0","0","1"]
+, ["1","0","1","1","0","1"]
+, ["1","0","0","0","0","1"]
+ ,["1","1","1","1","1","1"]
+ ]
+print(sol.numIslands(grid3))
