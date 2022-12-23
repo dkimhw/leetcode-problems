@@ -71,6 +71,7 @@ class Solution:
     new_val = 0
     if digit1 is not None and digit2 is not None:
       new_val = digit1.val + digit2.val + carry
+      print("addTwoDigits: ", new_val)
       if new_val > 9:
         return (True, new_val - 10)
       else:
@@ -87,8 +88,8 @@ class Solution:
     current_carry = 0
     while current_node_l1 != None or current_node_l2 != None:
       new_val = self.addTwoDigits(current_node_l1, current_node_l2, current_carry)
-      # print("l1:", current_node_l1.val)
-      # print("l2:", current_node_l2.val)
+      print("l1:", current_node_l1.val)
+      print("l2:", current_node_l2.val)
       print("new_val: ", new_val)
       if new_linked_nodes is None:
         new_linked_nodes = ListNode(new_val[1])
@@ -97,9 +98,13 @@ class Solution:
 
       if new_val[0]:
         current_carry = 1
+      else:
+        current_carry = 0
 
-      current_node_l1 = current_node_l1.next if current_node_l2 is not None else None
+      current_node_l1 = current_node_l1.next if current_node_l1 is not None else None
       current_node_l2 = current_node_l2.next if current_node_l2 is not None else None
+    if current_carry == 1:
+      self.appendToLinkedList(new_linked_nodes, ListNode(1, None))
     return new_linked_nodes
 
 sol = Solution()
@@ -134,10 +139,23 @@ b1 = ListNode(9)
 b2 = ListNode(9)
 b1.next = b2
 
-result2 = sol.addTwoNumbers(a1, b2)
+result2 = sol.addTwoNumbers(a1, b1)
 
-print(result2.val)
-print(result2.next.val)
+curr = result2
+while  curr is not None:
+  print(curr.val)
+  curr = curr.next
+
+
+# current_node_l1 = a1
+# current_node_l2 = b1
+# while current_node_l1 != None or current_node_l2 != None:
+#   print("l1:", current_node_l1.val)
+#   print("l2:", current_node_l2.val)
+#   current_node_l1 = current_node_l1.next #if current_node_l1 is not None else None
+#   current_node_l2 = current_node_l2.next #if current_node_l2 is not None else None
+
+
 # print(result2.next.next.val)
 # def appendToLinkedList(nodes: Optional[ListNode], new_node: ListNode):
 #   curr_node = nodes
