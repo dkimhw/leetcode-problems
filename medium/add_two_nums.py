@@ -28,7 +28,6 @@ General Algorithm:
 - Loop over the two linked lists
 - For each element, add them together
   - If the sum of the two results in a carry
-    - put 0 and pass the carry on for the next elements to add together
   - create a new linked node
     - if `new_linked_nodes` - assign new linked node with val
     - if `carry` is true - add 1 in the next digit
@@ -40,7 +39,15 @@ Looping a List Node:
   - set current_node = this.next
 
 Create a way to easily add to the tail of the ListNode
--
+- Loop from start of linkedlist until we hit "None" (true condition)
+- Then:
+  - set the *current node* next value to the ListNode obj we want to append
+
+Carry Logic
+- 99
+- 99
+- 9 + 9 = 18 -> 8, carry 1
+- 18 + 1 = 198
 """
 from typing import Optional
 
@@ -49,21 +56,29 @@ class ListNode:
     self.val = val
     self.next = next
 
-
 class Solution:
+  # Append to tail of ListNode
+  def appendToLinkedList(self, nodes: Optional[ListNode], new_node: ListNode):
+    curr_node = nodes
+    while True:
+      if curr_node.next == None:
+        curr_node.next = new_node
+        return
+      curr_node = nodes.next
+
   # Returns (carry: boolean, sum: integer)
-  def addTwoDigits(self, digit1: int, digit2: int, carry: int):
+  def addTwoDigits(self, digit1: ListNode, digit2: ListNode, carry: int):
     new_val = 0
     if digit1 is not None and digit2 is not None:
-      new_val = digit1 + digit2 + carry
+      new_val = digit1.val + digit2.val + carry
       if new_val > 9:
-        return (True, 0)
+        return (True, new_val - 10)
       else:
         return (False, new_val)
     elif digit1 is not None:
-      return (False, digit1 + carry)
+      return (False, digit1.val + carry)
     else:
-      return (False, digit2 + carry)
+      return (False, digit2.val + carry)
 
   def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
     current_node_l1 = l1
@@ -71,34 +86,74 @@ class Solution:
     new_linked_nodes = None
     current_carry = 0
     while current_node_l1 != None or current_node_l2 != None:
-      new_val = self.addTwoDigits(current_node_l1.val, current_node_l2.val, current_carry)
+      new_val = self.addTwoDigits(current_node_l1, current_node_l2, current_carry)
       # print("l1:", current_node_l1.val)
       # print("l2:", current_node_l2.val)
-      # print("new_val: ", new_val)
+      print("new_val: ", new_val)
       if new_linked_nodes is None:
         new_linked_nodes = ListNode(new_val[1])
+      else:
+        self.appendToLinkedList(new_linked_nodes, ListNode(new_val[1], None))
 
       if new_val[0]:
         current_carry = 1
 
-      current_node_l1 = current_node_l1.next
-      current_node_l2 = current_node_l2.next
-
-
-a = ListNode(2)
-b = ListNode(4)
-c = ListNode(3)
-
-a.next = b
-b.next = c
-
-d = ListNode(5)
-e = ListNode(6)
-f = ListNode(4)
-
-d.next = e
-e.next = f
+      current_node_l1 = current_node_l1.next if current_node_l2 is not None else None
+      current_node_l2 = current_node_l2.next if current_node_l2 is not None else None
+    return new_linked_nodes
 
 sol = Solution()
+# a = ListNode(2)
+# b = ListNode(4)
+# c = ListNode(3)
 
-sol.addTwoNumbers(a, d)
+# a.next = b
+# b.next = c
+
+# d = ListNode(5)
+# e = ListNode(6)
+# f = ListNode(4)
+
+# d.next = e
+# e.next = f
+
+# sol = Solution()
+
+# result = sol.addTwoNumbers(a, d)
+
+# print(result.val)
+# print(result.next.val)
+# print(result.next.next.val)
+
+
+a1 = ListNode(9)
+a2 = ListNode(9)
+a1.next = a2
+
+b1 = ListNode(9)
+b2 = ListNode(9)
+b1.next = b2
+
+result2 = sol.addTwoNumbers(a1, b2)
+
+print(result2.val)
+print(result2.next.val)
+# print(result2.next.next.val)
+# def appendToLinkedList(nodes: Optional[ListNode], new_node: ListNode):
+#   curr_node = nodes
+#   while curr_node is not None:
+#     print(curr_node.val)
+#     if curr_node.next == None:
+#       curr_node.next = new_node
+#       return
+#     curr_node = nodes.next
+
+# x = ListNode(5)
+# y = ListNode(6)
+# x.next = y
+# appendToLinkedList(x, ListNode(8))
+
+# blah = x
+# while blah is not None:
+#   print(blah.val)
+#   blah = blah.next
