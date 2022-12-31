@@ -103,8 +103,8 @@ class Solution:
 
 
 sol = Solution()
-# print(sol.breakPalindrome('abccba'))
-# print(sol.breakPalindrome('a'))
-# print(sol.breakPalindrome('aaaaaa'))
-# print(sol.breakPalindrome('aba'))
+print(sol.breakPalindrome('abccba'))
+print(sol.breakPalindrome('a'))
+print(sol.breakPalindrome('aaaaaa'))
+print(sol.breakPalindrome('aba'))
 print(sol.breakPalindrome('bbb'))
