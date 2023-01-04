@@ -77,16 +77,8 @@ class Solution:
       for idx in range(1, len(nums)):
         curr_element = nums[idx]
         # print(idx, '-', curr_sum, '-', max_sum)
-        if curr_element >= 0 and curr_sum + curr_element < curr_element:
-          max_sum = max(curr_element, max_sum)
-          curr_sum = curr_element
-        elif curr_element < 0 and curr_element > curr_sum:
-          max_sum = max(curr_element, max_sum)
-          curr_sum = curr_element
-        else:
-          curr_sum += curr_element
-          max_sum = max(max_sum, curr_sum)
-
+        curr_sum = max(curr_element, curr_sum + curr_element)
+        max_sum = max(max_sum, curr_sum)
       return max_sum
     except IndexError:
       return IndexError
