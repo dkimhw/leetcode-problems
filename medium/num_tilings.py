@@ -8,7 +8,7 @@ Input: `n` integer value - shows the width of the board (2 x n board)
 Output: integer value
   - number of different ways to create 2 x n board
 Notes:
-  - Since the answer may be very large, return it modulo 109 + 7.
+  - Since the answer may be very large, return it modulo 10^9 + 7.
   - Regular domino tile and Tromino tile
   - Two tilings are different if and only if there are two 4-directionally adjacent cells on the board such that exactly one of the tilings has both squares occupied by a tile.
 
@@ -50,12 +50,16 @@ Algorithm (DP):
   - p(k)=p(k−1)+f(k−2)
 
 1. Start from `f(n)` and then dive all the way to the base cases, f(1), f(2), p(2)
-2. Define subproblems
-2. Recursion calls will use the results of subproblems and base cases to help us get the final result, f(n).
+2. Define subproblems (see above)
+3. Recursion calls will use the results of subproblems and base cases to help us get the final result, f(n).
   - The stop condition for the recursive calls is when k reaches a base case (i.e. k<=2k <= 2k<=2). Values for the base cases will be directly returned instead of making more recursive calls.
     - f(1)=1
     - f(2)=2
     - p(2)=1
+4. If k is greater than 2, then we will make recursive calls to f and p according to the transition function:
+    - f(k)= f(k−1) + f(k−2) + 2∗p(k−1)
+    - pp(k) = p(k-1) + f(k-2)
+5. f(n) will be returned once all recursive calls are finished.
 """
 from functools import cache
 
@@ -76,6 +80,3 @@ class Solution:
       return (f(n - 1) + f(n - 2) + 2 * p(n - 1)) % MOD
 
     return f(n)
-
-sol = Solution()
-print(sol.numTilings(3))
