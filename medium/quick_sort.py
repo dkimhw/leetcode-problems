@@ -30,7 +30,7 @@ Data Structures & Algos
     - append if greater
   - Call 1st recursion with lesser array
   - Call 2nd recursion with greater array
-  - Combine the result of both
+  - Combine the result of both with the pivot idx between lesser and greater
   - return result
 
 """
@@ -38,14 +38,17 @@ from typing import List
 import random
 
 class Solution:
-  def reorderElements(self, nums: List[int], pivot: int) -> List[int]:
+  def reorderElements(self, nums: List[int], pivotIdx: int) -> List[int]:
     lesser = []
     greater = []
-    for idx in range(1, len(nums)):
-      if nums[idx] <= pivot:
+    for idx in range(len(nums)):
+      if pivotIdx == idx:
+        continue
+
+      if nums[idx] <= nums[pivotIdx]:
         lesser.insert(0, nums[idx])
 
-      if nums[idx] > pivot:
+      if nums[idx] > nums[pivotIdx]:
         greater.append(nums[idx])
     return lesser, greater
 
@@ -54,19 +57,16 @@ class Solution:
     if len(nums) <= 1:
       return nums
 
-    print("nums", nums)
-    pivot = random.randint(0, len(nums) - 1)
-    lesser, greater = self.reorderElements(nums, pivot)
-    result = self.quickSort(lesser) + self.quickSort(greater)
+    pivotIdx = random.randint(0, len(nums) - 1)
+    lesser, greater = self.reorderElements(nums, pivotIdx)
+    result = self.quickSort(lesser) + [nums[pivotIdx]] + self.quickSort(greater)
+    #result += result
 
     print("result", result)
     return result
 
 
 
-
-
-
 sol = Solution()
-print(sol.reorderElements([4, 2, 6, 7, 10, 9], 4))
+print(sol.reorderElements([4, 2, 6, 7, 10, 9], 3))
 print(sol.quickSort([4, 2, 6, 7, 10, 9]))
