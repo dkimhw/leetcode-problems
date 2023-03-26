@@ -60,9 +60,7 @@ class Solution:
     pivotIdx = random.randint(0, len(nums) - 1)
     lesser, greater = self.reorderElements(nums, pivotIdx)
     result = self.quickSort(lesser) + [nums[pivotIdx]] + self.quickSort(greater)
-    #result += result
 
-    print("result", result)
     return result
 
 
@@ -70,3 +68,4 @@ class Solution:
 sol = Solution()
 print(sol.reorderElements([4, 2, 6, 7, 10, 9], 3))
 print(sol.quickSort([4, 2, 6, 7, 10, 9]))
+print(sol.quickSort([99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0]))
