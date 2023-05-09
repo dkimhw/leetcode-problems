@@ -32,25 +32,34 @@ Brainstorm & Walkthrough
 
 [1, 1, 1, 1]
 
-k = 3
+k = 2
 
-answer is 2
+answer is 4
 
 Since subarrays are sequential, we can keep track of the prefix sum. For example:
 * 1: [1]
-  - sum = 1; 1 - 3 = -2; currently no prefixsum of -2 that we can use to achieve 3
-  - prefix sum at this point is 1 so we add to prefixSum['1'] += 1
+  - sum = 1;key =  1 % 2 = 1; currently no prefixsum of 1 that we can use to achieve 2 which can be divided by 2
+  - The remainder here is 1 (which is what we need to be able to be divided by 2) so we add to prefixSum['1'] += 1
   - prefixSum = {0: 1, 1: 1}
+  - result = 0
 * 2: [1, 1]
-  - sum = 2; 2 - 3 = -1; currently no prefixsum of -1 that we can use from prefixSum dict
-  - prefix sum at this point is 2 so we add to prefixSum['2'] += 1
-  - prefixSum = {0: 1, 1: 1, 2: 1}
+  - sum = 2;key 2 % 2 = 0; there is a prefixSum['0'] === 1
+    - We add to `result` the value at prefixSum['0']
+  - Then we add to prefixSum['0'] += 1
+  - prefixSum = {0: 2, 1: 1}
+  - result = 1
 * 3: [1, 1, 1]
-  - sum = 3; 3 - 3 = 0; base case is 0: 1 so there is a prefix of 0 we can remove
-  - so we count that; skip prefixSum adding
+  - sum = 3; key = 3 % 2 = 1; There is a prefixSum['1'];
+    - We add to `result` the value at prefixSum['1']
+  - Then we add to prefixSum['1'] += 1
+  - prefixSum = {0: 2, 1: 2}
+  - result = 2
 * 4: [1, 1, 1, 1]
-  - sum = 4; 4 - 3 = 1; there is a prefixSum of 1
-  - so we count that
+  - sum = 4; 4 % 2 = 0; There is a prefixSum['1'];
+    - We add to `result` the value at prefixSum['1']
+  - Then we add to prefixSum['1'] += 1
+  - prefixSum = {0: 3, 1: 2}
+  - result = 4
 
 Algorithms
 ---------------
@@ -74,17 +83,18 @@ class Solution:
   def subarraysDivByK(self, nums: List[int], k: int) -> int:
     prefixSum = Counter()
     prefixSum[0] += 1
-    sum = 0
+    rsum = 0
     result = 0
 
     for num in nums:
-      sum += num
-      diff = sum - k
-      if diff in prefixSum:
-        result += prefixSum[diff]
-      prefixSum[sum] += 1
+      rsum += num
+      key = rsum % k
+      if key in prefixSum:
+        result += prefixSum[key]
+      prefixSum[key] += 1
 
     return result
 
 sol = Solution()
 print(sol.subarraysDivByK([4,5,0,-2,-3,1], 5))
+print(sol.subarraysDivByK([1,1,1,1], 2))

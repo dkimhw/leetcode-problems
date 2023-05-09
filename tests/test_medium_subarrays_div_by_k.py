@@ -2,16 +2,16 @@
 from medium.subarrays_div_by_k import Solution
 
 class TestSubArraysDivByK:
-  def test_should_return_2(self):
+  def test_should_return_four(self):
     # prepare
     sol = Solution()
     nums = [1, 1, 1, 1]
-    k = 3
+    k = 2
 
     # call
     result = sol.subarraysDivByK(nums, k)
 
-    assert result == 2
+    assert result == 4
 
 
   def test_should_return_seven(self):
