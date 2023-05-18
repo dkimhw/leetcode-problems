@@ -33,14 +33,14 @@ Output: -1
 Explanation: There is only 1 task of difficulty level 2, but in each round, you can only complete either 2 or 3 tasks of the same difficulty level. Hence, you cannot complete all the tasks, and the answer is -1.
 
 
-Algorithms:
+Algorithms Attempt:
 1. create a map variable & results variable
 2. loop through `tasks` and count the tasks using the task difficulty value as the key
 3. loop through the map variable
   - for each k-v:
-    - check if it can be grouped into 2 or 3*
-      - incrmeent results by each group
-    - if it cannot
+    - check if it can be grouped into 2 or 3* (Helper)
+      - increment results by each group
+    - if it cannot (returns -1 from the helper function)
       - return -1
 4. return results
 
@@ -53,32 +53,84 @@ Helper (counting groups)
     - recursion(currVal - 2)
     - recursion(currVal - 3)
 
-7 - 3, 3, 1 does not work, you need 3, 2, 2
 
+Algorithm Attempt 2:
+- Instead of recursing and finding all combinations of -2, -3 on each tree step:
+- This is possible because we want to be greedy - take 3 at a time and account for cases where 3 doesn't quite fit
+  - If map[el] == 1 then return - 1 (cannot break it apart)
+  - If map[el] % 3 === 0 then add map[el] to results
+- Scenarios where 3 doesn't fully divide
+  - There is one left so something like 4
+    -
+  - There is two left so something like 5
 """
+from typing import List
+from collections import Counter
 
-def group_by_two_and_three(num):
-  def group_by_two_and_three_helper(num, result):
-    if num == 0:
-      # print("hello")
-      # print(result, "result")
-      return result
-    elif num < 0:
-      return -1
+class SolutionAttempt:
+  def group_by_two_and_three(self, num):
+    def group_by_two_and_three_helper(num, result):
+      if num == 0:
+        # print("result: ", result)
+        return result
+      elif num < 0:
+        return -1
 
-    # print("result", result)
-    result += 1
-    recurse1 = group_by_two_and_three_helper(num - 2, result)
-    recurse2 = group_by_two_and_three_helper(num - 3, result)
+      result += 1
+      recurse1 = group_by_two_and_three_helper(num - 2, result)
+      recurse2 = group_by_two_and_three_helper(num - 3, result)
 
-    if (recurse1 > -1 or recurse2 > -1):
-      return max(recurse1, recurse2)
-    else:
-      return min(recurse1, recurse2)
+      # print("recurse1: ", recurse1)
+      # print("recurse2: ", recurse2)
+      if (recurse1 == -1):
+        return recurse2
+      elif (recurse2 == -1):
+        return recurse1
+      else:
+        return min(recurse1, recurse2)
 
-  val = group_by_two_and_three_helper(num, 0)
-  return val
+    val = group_by_two_and_three_helper(num, 0)
+    print("val", val)
+    return val
 
+  def minimumRounds(self, tasks: List[int]) -> int:
+    result = 0
+    map = Counter()
 
-print(group_by_two_and_three(7))
-print(group_by_two_and_three(1))
+    # Count up the tasks by difficulty
+    for el in tasks:
+      map[el] += 1
+
+    for _, val in map.items():
+      min_group_cnt = self.group_by_two_and_three(val)
+
+      if min_group_cnt == -1:
+        return -1
+
+      if min_group_cnt != -1:
+        result += min_group_cnt
+    return result
+
+import math
+class Solution:
+  def minimumRounds(self, tasks: List[int]) -> int:
+    result = 0
+    map = Counter()
+
+    # Count up the tasks by difficulty
+    for el in tasks:
+      map[el] += 1
+
+    for _, val in map.items():
+      if val == 1:
+        return -1
+      elif val % 3 == 0:
+        result += int(val / 3)
+      elif val % 3 == 1:
+        result += (math.floor(val / 3) + 1)
+      elif val % 3 == 2:
+        result += (math.floor(val / 3) + 1)
+    return result
+
+# sol = Solution()
+# print(sol.minimumRounds([2,2,3,3,2,4,4,4,4,4])) # 4
