@@ -52,11 +52,7 @@ Helper function*
   - if arr.length <= 1 (cannot be divided any longer)
     - return
 2. Create a midpoint from `arr`
-3. Check the prev & next idx and compare to midpoint val
-  - if one of prev or next is the same val then proceed to:
-    4a. Create two new arrays to the left and right of the midpoint
-    5a. Save the results to two variables
-    6a. Only return the variable that is not None
+3. If the array length is even
   - if prev or next don't match
     4b. return val
 
@@ -78,6 +74,10 @@ class Solution:
 
     if midpoint_val != next_val and midpoint_val != prev_val:
       return midpoint_val
+    elif midpoint_val == prev_val and midpoint_val != next_val:
+      return next_val
+    elif midpoint_val == next_val and midpoint_val != prev_val:
+      return prev_val
 
     r1 = self.singleNonDuplicate(nums[0: midpoint])
     r2 = self.singleNonDuplicate(nums[midpoint:])
