@@ -1,4 +1,5 @@
 """
+https://leetcode.com/problems/single-element-in-a-sorted-array/
 
 Problem
 --------------
@@ -23,70 +24,61 @@ So it's relatively straighforward to do this in O(n)
   - loop over each array
   - if the next variable is not the same - then we found the single non dupe element
 
-divide & conquer?
-
-So take a midpoint
-1,1,2,3 ; 3 ; 4,4,8,8
-- check left and right - if one of them checks
-- continue
-
-- next midpoint
-4,4; 8; 8 - match 8 - so we would divide again
-
-1,1; 2; 3 - non match so return
-
+[3,3,7,7,10,11,11]
+1. Midpoint is 7
+2. Check if there are partners to the left and right
+  - there is one to the left
+3. Note that once we remove the two partners: the odd side has the single num - so we want to search in [10, 11, 11]
+  - discard the other array (basically binary search)
+  [3, 3]; [10, 11, 11]
+4. So we search [10, 11, 11]
+  - midpoint is 11
+  - check for partners left & right
+  - remove [11, 11]
+5. Left with 10
 
 
 Algorithm
 --------------
 
 Main algo
-1. Create a variable called `result`
-2. Create a helper recurse function
-  - takes (arr, result)
-  - to be expanded below
-3. Return `result`
-
-Helper function*
-1. Recursion base case
-  - if arr.length <= 1 (cannot be divided any longer)
-    - return
-2. Create a midpoint from `arr`
-3. If the array length is even
-  - if prev or next don't match
-    4b. return val
+1. Create two pointers starting at the start and end
+2. Find midpoint - (start + end // 2)
+3. Check if both halves are even (end + mid % 2  === 0)
+4. Check partners left & right
+  - if mid + 1 === mid
+    - if halves are even: we want to move the start to mid + 2 because we only want to check the array to the right
+    - else: we want to move the end to mid - 1
+  - if mid - 1 === mid
+    - if halves are even: we want to move the high to mid -2 because we only want to check the array to the left
+    - else: we want to move the start to mid + 1 because we only want to check the array to the right
 
 """
 import math
 from typing import List
 
 class Solution:
+
   def singleNonDuplicate(self, nums: List[int]) -> int:
-    # base case
-    if len(nums) <= 1:
-      return
+    start = 0
+    end = len(nums) - 1
+    while start < end:
+      midpoint = (start + end) // 2
+      halves_even = (end - midpoint) % 2 == 0
 
-    # create midpoint
-    midpoint = math.floor(len(nums) / 2)
-    midpoint_val = nums[midpoint]
-    next_val = nums[midpoint + 1] if midpoint + 1 < len(nums) else None
-    prev_val = nums[midpoint - 1] if midpoint - 1 >= 0 else None
-
-    if midpoint_val != next_val and midpoint_val != prev_val:
-      return midpoint_val
-    elif midpoint_val == prev_val and midpoint_val != next_val:
-      return next_val
-    elif midpoint_val == next_val and midpoint_val != prev_val:
-      return prev_val
-
-    r1 = self.singleNonDuplicate(nums[0: midpoint])
-    r2 = self.singleNonDuplicate(nums[midpoint:])
-
-    if r1 != None:
-      return r1
-    elif r2 != None:
-      return r2
-
+      if nums[midpoint + 1] == nums[midpoint]:
+        if halves_even:
+          start = midpoint + 2
+        else:
+          end = midpoint - 1
+      elif nums[midpoint - 1] == nums[midpoint]:
+        if halves_even:
+          end = midpoint - 2
+        else:
+          start = midpoint + 1
+      else: # could be the midpoint is the unique
+        return nums[midpoint]
+    return nums[start]
 
 
 sol = Solution()
