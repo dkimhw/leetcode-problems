@@ -62,8 +62,8 @@ Algorithm:
 ----------------
 1. Create a result variable = 0
 2. Loop through the length of the string (k)
-  - Loop through `strs`
-    - For each `k` - compare the characters
+  - Loop through `strs` - index of jdx
+    - For each `k` - compare the characters at position k for elements at jdx and jdx - 1
       - If at any point in that loop it's out of order (curr index < prev index)
         - break and increment result+=
       - else:
@@ -76,3 +76,13 @@ from typing import List
 
 class Solution:
   def minDeletionSize(self, strs: List[str]) -> int:
+    result = 0
+    k = len(strs[0])
+    for idx in range(0, k):
+      # print(idx)
+      for jdx in range(1, len(strs)):
+        # print(strs[jdx][idx])
+        if strs[jdx][idx] < strs[jdx - 1][idx]:
+          result += 1
+          break
+    return result
