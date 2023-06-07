@@ -59,22 +59,21 @@ Algorithms
 from typing import List
 
 def isBadVersion(n: int) -> bool:
-  if n in [1]:
+  if n in [4, 5]:
     return True
   else:
     return False
 
 class Solution:
   def firstBadVersion(self, n: int) -> int:
-    versions = list(range(1, n + 1))
-    left = 0
-    right = n - 1
+    left = 1
+    right = n
     result = None
 
     while left <= right:
       midpoint = (left + right) // 2
-      is_mid_point_bad = isBadVersion(versions[midpoint])
-      # print("midpoint", midpoint)
+      is_mid_point_bad = isBadVersion(midpoint)
+      print("midpoint", midpoint)
       if is_mid_point_bad:
         # print("hello", is_mid_point_bad)
         right = midpoint - 1
@@ -82,11 +81,11 @@ class Solution:
       else:
         left = midpoint + 1
 
-    return versions[result]
+    return result
 
 
 sol = Solution()
-# print(sol.firstBadVersion(5))
-print(sol.firstBadVersion(1))
+print(sol.firstBadVersion(5))
+#print(sol.firstBadVersion(1))
 
 [1, 2, 3, 4, 5]
