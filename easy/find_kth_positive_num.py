@@ -82,7 +82,24 @@ class Solution:
         currK += 1
     return missing_nums[k - 1]
 
-sol = Solution()
-print(sol.findKthPositive([2,3,4,7,11], 5))
-print(sol.findKthPositive([1,2,3,4], 2))
-print(sol.findKthPositive([5,6,7,8,9], 9))
+# More optimal version of O(n)
+class Solution2:
+  def findKthPositive(self, arr: List[int], k: int) -> int:
+      # if the kth missing is less than arr[0]
+      if k <= arr[0] - 1:
+          return k
+      k -= arr[0] - 1
+
+      # search kth missing between the array numbers
+      for i in range(len(arr) - 1):
+          # missing between arr[i] and arr[i + 1]
+          curr_missing = arr[i + 1] - arr[i] - 1
+          # if the kth missing is between
+          # arr[i] and arr[i + 1] -> return it
+          if k <= curr_missing:
+              return arr[i] + k
+          # otherwise, proceed further
+          k -= curr_missing
+
+      # if the missing number if greater than arr[-1]
+      return arr[-1] + k
