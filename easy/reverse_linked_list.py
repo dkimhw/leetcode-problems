@@ -19,6 +19,23 @@ Output: [5,4,3,2,1]
 2 -> add to head [2, 1]
 3 -> add to head [3, 2, 1]
 
+Alternate way
+
+loop 1:
+  - next_temp = 2
+  - curr.next = prev; prev is now None
+  - prev = curr; prev is now 1
+  - curr = next_temp; curr is now 2
+  [2, 3, 4, 5]
+  prev [1]
+
+loop 2:
+  - next_temp = 3
+  - curr.next = prev; curr.next is now 1
+  - prev = curr; prev is now 2
+  - curr = next_temp; curr is now 3
+  [3, 4, 5]
+  [2, 1]
 
 Algorithm
 -------------------
@@ -39,6 +56,17 @@ class ListNode:
     self.next = next
 
 class Solution:
+  def reverseListOptimal(self, head: ListNode) -> ListNode:
+      prev = None
+      curr = head
+      while curr:
+          next_temp = curr.next
+          curr.next = prev
+          prev = curr
+          curr = next_temp
+
+      return prev
+
   def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
     curr_node = head
     new_head = None
