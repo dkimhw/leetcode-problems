@@ -66,6 +66,12 @@ class Solution:
       curr_counter += 1
       curr_node = curr_node.next
 
+  def middleNodeAlt(self, head: ListNode) -> ListNode:
+      arr = [head]
+      while arr[-1].next:
+          arr.append(arr[-1].next)
+      return arr[len(arr) // 2]
+
 sol = Solution()
 head = ListNode(1)
 head.next = ListNode(2)
