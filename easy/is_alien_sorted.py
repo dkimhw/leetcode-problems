@@ -1,5 +1,6 @@
 
 """
+https://leetcode.com/problems/verifying-an-alien-dictionary/
 
 Problem
 -----------
@@ -39,10 +40,13 @@ Algorithm
 1. Generate a dictionary of characters in order with values as the index of the string seq
 2. Loop through the `words` array
   - Loop through words[i]
-    - Compare each character against the same character position of words[i+1]
-    - If words
-
-
+    - Compare each character words[i][j] against the same character position of words[i+1][j]
+    - If they are different:
+      - check the index values to see if the value of char words[i][j] < words[i+1][j]
+      - if yes: break
+      - if no: return false;
+    - If a words[i] is shorter than words[i + 1] then return true
+3. Return true
 
 """
 
@@ -50,4 +54,29 @@ from typing import List
 
 class Solution:
   def isAlienSorted(self, words: List[str], order: str) -> bool:
-    pass
+    char_values = {}
+    for idx in range(len(order)):
+      char_values[order[idx]] = idx
+
+    for idx in range(len(words)):
+      curr_word = words[idx]
+      if idx + 1 < len(words):
+        for jdx in range(len(curr_word)):
+            # condition to check if curr words is longer
+            if (jdx >= len(words[idx + 1])):
+              return False
+
+            if curr_word[jdx] != words[idx + 1][jdx]:
+              # print("curr word char", curr_word[jdx])
+              # print("next word", words[idx + 1][jdx])
+              if char_values[curr_word[jdx]] < char_values[words[idx + 1][jdx]]:
+                break
+              else:
+                return False
+    return True
+
+
+sol = Solution()
+print(sol.isAlienSorted(["hello","leetcode"],  "hlabcdefgijkmnopqrstuvwxyz")) # true
+print(sol.isAlienSorted(["word","world","row"], "worldabcefghijkmnpqstuvxyz")) # false
+print(sol.isAlienSorted(["apple","app"], "abcdefghijklmnopqrstuvwxyz")) # false
