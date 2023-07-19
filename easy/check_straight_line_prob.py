@@ -31,10 +31,12 @@ Algorithm 1st Attemp
 3. Return true
 
 
-Issue: The coordinates are not in order
+Issue: Two points next to each other could be in a straight line technically but
+for the coordinates to be straight I think it needs to have the same slope throughout
+so if I take the beginning coordinate - check for the slope against the rest of the coordinate
 
 [[0,0],[0,1],[0,-1]] --> this is technically
-
+[[-3,-2],[-1,-2],[2,-2],[-2,-2],[0,-2]] --> the way I handle "x" value has to be different
 """
 from typing import List
 
@@ -42,8 +44,9 @@ class Solution:
 
   def checkStraightLine(self, coordinates: List[List[int]]) -> bool:
     def calc_slope(x, y):
-      if x > 0:
-        return abs(y / x)
+      print("x", x)
+      if x != 0:
+        return y / x
       else:
         return None
 
@@ -52,8 +55,8 @@ class Solution:
 
     slope = calc_slope(coordinates[1][0] - coordinates[0][0], coordinates[1][1] - coordinates[0][1])
 
-    for idx in range(len(coordinates) - 1):
-      curr_slope = calc_slope(coordinates[idx + 1][0] - coordinates[idx][0], coordinates[idx + 1][1] - coordinates[idx][1])
+    for idx in range(1, len(coordinates)):
+      curr_slope = calc_slope(coordinates[idx][0] - coordinates[0][0], coordinates[idx][1] - coordinates[0][1])
       print("curr_slope", curr_slope)
       if curr_slope == slope:
         continue
@@ -66,4 +69,11 @@ sol = Solution()
 # print(sol.checkStraightLine([[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]]))
 # print(sol.checkStraightLine([[1,1],[2,2],[3,4],[4,5],[5,6],[7,7]]))
 # print(sol.checkStraightLine([[0,0],[0,5],[5,5],[5,0]]))
-print(sol.checkStraightLine([[0,0],[0,1],[0,-1]]))
+# print(sol.checkStraightLine([[0,0],[0,1],[0,-1]]))
+# print(sol.checkStraightLine([[-3,-2],[-1,-2],[2,-2],[-2,-2],[0,-2]]))
+# print(sol.checkStraightLine([[1,-8],[2,-3],[1,2]]))
+print(sol.checkStraightLine([[1,1],[2,2],[2,0]]))
+
+# (-8 - -3) / (2 - 1) = -5 / 1 = -5
+# (-3 - 2) / (1 - 2) = -5 / -1 = 5
+# (0 - 1) / (2 - 1) = -1 / 1 = -1
