@@ -37,11 +37,21 @@ Algorithm
   - if nums1[i] != nums[j] --> move up i by 1
 5. Return result
 
+
+Better Algorithm
+-------------------
+1. Convert both to sets
+2. Loop over nums1 set
+  - check if nums1 element is in nums2 set
+  - this is O(1) operation
+
+O(2m + n) --> O(m + n)
+
 """
 
 from typing import List
 
-class Solution:
+class Solution1:
   def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
     result = set()
     nums1_idx = 0
@@ -63,6 +73,19 @@ class Solution:
         nums1_idx += 1
 
     return list(result)
+
+
+class Solution:
+  def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+    set1 = set(nums1)
+    set2 = set(nums2)
+    result = []
+
+    for el in set1:
+      if el in set2:
+        result.append(el)
+
+    return result
 
 sol = Solution()
 # print(sol.intersection([1,2,2,1], [2,2]))
