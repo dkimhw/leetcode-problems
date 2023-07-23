@@ -71,10 +71,3 @@ class Solution:
         return False
 
     return True
-
-
-sol = Solution()
-# print(sol.canMakeArithmeticProgression([3,5,1])) # true
-# print(sol.canMakeArithmeticProgression([1,2,4])) # false
-print(sol.canMakeArithmeticProgression([1, 2, 3, 2, 5])) # false
-print(sol.canMakeArithmeticProgression([0,0,0,0])) # true
