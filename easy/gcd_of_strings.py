@@ -1,5 +1,6 @@
 
 """
+https://leetcode.com/problems/greatest-common-divisor-of-strings/
 
 Problem
 -------------
@@ -34,7 +35,7 @@ Algorithm Walkthrough
 - Then we can take ABA - repeat
 - Then take AB - successful
 
-Algorithm Take 1
+Algorithm Take 1 - O(n * (m + n)) or O(n^2)
 --------------
 1. Find the smaller string
 2. Loop through smaller string backwards (because it is gcd)
@@ -50,6 +51,18 @@ Algorithm Take 1
 3b. For each iteration
   - Do the same above for the smaller string from 3a
 4. Return ""
+
+
+Algorithm Take 2 - O(min(m,n)⋅(m+n))
+1. Find the shorter string among str1 and str2, without loss of generality, let it be str1.
+2. Start with base = str1, and check if both str1 and str2 are made of multiples of base.
+    - If so, return base.
+    - Otherwise, we shall try a shorter string by removing the last character from base.
+3. If we have checked all prefix strings without finding the GCD string, return "".
+
+Time complexity:
+We checked every prefix string base of the shorter string among str1 and str2, and verify if both strings are made by multiples of base. There are up to min⁡(m,n) prefix strings to verify and each check involves iterating over the two input strings to check if the current base is the GCD string, which costs O(m+n). Therefore, the overall time complexity is O(min(m,n)⋅(m+n)).
+
 
 """
 
@@ -85,9 +98,20 @@ class SolutionTest:
         return current_substring
     return ""
 
-sol_test = SolutionTest()
-print(sol_test.gcdOfStrings("ABCABC", "ABC")) # ABC
-print(sol_test.gcdOfStrings("ABABAB", "ABAB")) # AB
-print(sol_test.gcdOfStrings("LEET", "CODE")) # ""
-print(sol_test.gcdOfStrings("TAUXXTAUXXTAUXXTAUXXTAUXX", "TAUXXTAUXXTAUXXTAUXXTAUXXTAUXXTAUXXTAUXXTAUXX")) # TAUXX
-print(sol_test.gcdOfStrings("ABABABAB", "ABAB")) # ABAB
+class Solution:
+  def gcdOfStrings(self, str1: str, str2: str) -> str:
+    len1, len2 = len(str1), len(str2)
+
+    def valid(k):
+      if len1 % k or len2 % k:
+        return False
+
+      n1, n2 = len1 // k, len2 // k
+      base = str1[:k]
+      return str1 == n1 * base and str2 == n2 * base
+
+    for i in range(min(len1, len2), 0, -1):
+      if valid(i):
+        return str1[:i]
+
+    return ""
