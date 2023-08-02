@@ -1,5 +1,6 @@
 
 """
+https://leetcode.com/problems/spiral-matrix/
 
 Problem
 ------------
@@ -28,7 +29,7 @@ If you cannot then switch to down if you can
 Algorithm
 ---------------
 1. Create variable `result`
-2. while matrix is not empty
+2. while matrix is not empty (this needs to be expanded a little bit)
   2a. Loop over directions array [right, down, left, up]
   2b. Go through the elements in that direction & append to result (needs to be expanded) until you cannot go in that direction
     - expand on what elements are in that direction
@@ -47,12 +48,105 @@ Notes:
   1. Current location logic
     - declare current_loc = [0, 0]
     - as you move forward left/right/up/down - increase corresponding index
-  2. Need logic to identify whether we've reached the end of that direction
-    - If we were moving left, if current_loc[0] + 1 == len(matrix[0]) then return false (cannot move further)
-    - If we were moving right, if current_loc[0] - 1 < 0 then return false (cannot move further)
-    - If we were moving up, if current_loc[1] - 1 < 0 then return false (cannot move further)
-    - If we were
-  3. Need logic by using current location & direction to return a list of elements that we need to visit
+  2. Need logic by using current location & direction to return a list of elements that we need to visit
+    - update current location
+    - mark those elements in matrix as 'visited'
+    - logic:
+      - if "left" / "right"
+        - take current_loc[0] and return the row
+        - append elements not marked as 'visited'
+        - update current_loc[0] += len(matrix[0])
+      - if "up' / "down"
+        - take current_loc[1] and return the col (bit more complicated)
+        - append elements not marked as 'visited'
+        - update current_loc[1] += len(matrix)
 
+Two Problems
+-----------------
+1. Dealing with visited_cnt
+2. Issue of updating current_loc
+  - goes back to [0, 0]
 
 """
+from typing import List
+class Solution:
+  def getColumn(self, matrix: List[List[int]], colIdx: int) -> List[int]:
+    result = []
+    for row in matrix:
+      result.append(row[colIdx])
+    return result
+
+  def updateColumn(self, matrix: List[List[int]], colIdx: int) -> List[int]:
+    for row in matrix:
+      row[colIdx] = 'visited'
+
+  def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+    result = []
+    directions = ['right', 'down', 'left', 'up']
+    current_loc = [0, 0]
+    visited_cnt = 0
+    m_x_n = len(matrix) * len(matrix[0])
+
+    while visited_cnt < m_x_n: # come back & expand on this
+      for direction in directions:
+        if direction in ['right', 'left']:
+          print(direction, ": ", current_loc)
+          curr_row = matrix[current_loc[0]]
+          curr_row = list(filter(lambda el: el != 'visited', curr_row))
+          if direction == 'left':
+            curr_row.reverse()
+          print(direction, ' col :', curr_row)
+          # update the matrix
+          matrix[current_loc[0]] = ['visited'] * len(matrix[0])
+
+          # update variables
+
+          if current_loc[0] == 0 and current_loc[1] == 0:
+            current_loc[0] += len(matrix[0]) - 1
+          elif direction == 'left':
+            current_loc[0] -= len(curr_row)
+          else:
+            current_loc[0] += len(curr_row)
+
+          visited_cnt += len(curr_row)
+
+          print(len(curr_row) - 1)
+          print(direction, ": after change", current_loc)
+
+          result += curr_row
+        elif direction in ['down', 'up']:
+          print(direction, ": ", current_loc)
+          curr_col = self.getColumn(matrix, current_loc[0])
+          curr_col = list(filter(lambda el: el != 'visited', curr_col))
+          if direction == 'up':
+            curr_col.reverse()
+
+          print(direction, ' col :', curr_col)
+
+          # update the matrix
+          self.updateColumn(matrix, current_loc[0])
+
+          # update variables
+          visited_cnt += len(curr_col)
+
+          if direction == 'up':
+            current_loc[1] -= len(curr_col)
+          elif direction == 'down':
+            current_loc[1] += len(curr_col)
+
+          print(len(curr_col) - 1)
+          print(direction, ": after change", current_loc)
+
+          result += curr_col
+
+    print("current_location", current_loc)
+    print("matrix", matrix)
+    print("visited_cnt", visited_cnt)
+    print("m x n = ", len(matrix) * len(matrix[0]))
+
+    return result
+
+sol = Solution()
+print(sol.spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
+
+# [1,2,3,6,9,8,7,4,5]
