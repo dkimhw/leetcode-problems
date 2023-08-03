@@ -90,14 +90,14 @@ class Solution:
     while visited_cnt < m_x_n: # come back & expand on this
       for direction in directions:
         if direction in ['right', 'left']:
-          print(direction, ": ", current_loc)
-          curr_row = matrix[current_loc[0]]
+          # print(direction, ": ", current_loc)
+          curr_row = matrix[current_loc[1]]
           curr_row = list(filter(lambda el: el != 'visited', curr_row))
           if direction == 'left':
             curr_row.reverse()
-          print(direction, ' col :', curr_row)
+          # print(direction, ' col :', curr_row)
           # update the matrix
-          matrix[current_loc[0]] = ['visited'] * len(matrix[0])
+          matrix[current_loc[1]] = ['visited'] * len(matrix[0])
 
           # update variables
 
@@ -110,18 +110,21 @@ class Solution:
 
           visited_cnt += len(curr_row)
 
-          print(len(curr_row) - 1)
-          print(direction, ": after change", current_loc)
+          # print(len(curr_row) - 1)
+          # print(direction, ": after change", current_loc)
 
           result += curr_row
+          if visited_cnt >= m_x_n:
+            break
+
         elif direction in ['down', 'up']:
-          print(direction, ": ", current_loc)
+          # print(direction, ": ", current_loc)
           curr_col = self.getColumn(matrix, current_loc[0])
           curr_col = list(filter(lambda el: el != 'visited', curr_col))
           if direction == 'up':
             curr_col.reverse()
 
-          print(direction, ' col :', curr_col)
+          # print(direction, ' col :', curr_col)
 
           # update the matrix
           self.updateColumn(matrix, current_loc[0])
@@ -133,20 +136,21 @@ class Solution:
             current_loc[1] -= len(curr_col)
           elif direction == 'down':
             current_loc[1] += len(curr_col)
-
-          print(len(curr_col) - 1)
-          print(direction, ": after change", current_loc)
+          # print(len(curr_col) - 1)
+          # print(direction, ": after change", current_loc)
 
           result += curr_col
 
-    print("current_location", current_loc)
-    print("matrix", matrix)
-    print("visited_cnt", visited_cnt)
-    print("m x n = ", len(matrix) * len(matrix[0]))
+          if visited_cnt >= m_x_n:
+            break
+      # break
+    # print("current_location", current_loc)
+    # print("matrix", matrix)
+    # print("visited_cnt", visited_cnt)
+    # print("m x n = ", len(matrix) * len(matrix[0]))
 
     return result
 
 sol = Solution()
-print(sol.spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
-
-# [1,2,3,6,9,8,7,4,5]
+print(sol.spiralOrder([[1,2,3],[4,5,6],[7,8,9]])) # [1,2,3,6,9,8,7,4,5]
+print(sol.spiralOrder([[1,2,3,4],[5,6,7,8],[9,10,11,12]])) # [1,2,3,4,8,12,11,10,9,5,6,7]
