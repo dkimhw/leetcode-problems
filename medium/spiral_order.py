@@ -90,12 +90,10 @@ class Solution:
     while visited_cnt < m_x_n: # come back & expand on this
       for direction in directions:
         if direction in ['right', 'left']:
-          # print(direction, ": ", current_loc)
           curr_row = matrix[current_loc[1]]
           curr_row = list(filter(lambda el: el != 'visited', curr_row))
           if direction == 'left':
             curr_row.reverse()
-          # print(direction, ' col :', curr_row)
           # update the matrix
           matrix[current_loc[1]] = ['visited'] * len(matrix[0])
 
@@ -110,9 +108,6 @@ class Solution:
 
           visited_cnt += len(curr_row)
 
-          # print(len(curr_row) - 1)
-          # print(direction, ": after change", current_loc)
-
           result += curr_row
           if visited_cnt >= m_x_n:
             break
@@ -124,8 +119,6 @@ class Solution:
           if direction == 'up':
             curr_col.reverse()
 
-          # print(direction, ' col :', curr_col)
-
           # update the matrix
           self.updateColumn(matrix, current_loc[0])
 
@@ -136,8 +129,6 @@ class Solution:
             current_loc[1] -= len(curr_col)
           elif direction == 'down':
             current_loc[1] += len(curr_col)
-          # print(len(curr_col) - 1)
-          # print(direction, ": after change", current_loc)
 
           result += curr_col
 
@@ -151,6 +142,21 @@ class Solution:
 
     return result
 
-sol = Solution()
-print(sol.spiralOrder([[1,2,3],[4,5,6],[7,8,9]])) # [1,2,3,6,9,8,7,4,5]
-print(sol.spiralOrder([[1,2,3,4],[5,6,7,8],[9,10,11,12]])) # [1,2,3,4,8,12,11,10,9,5,6,7]
+
+class SolutionAlt:
+  def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+    m, n = len(matrix), len(matrix[0]) # Initial possible number of steps
+    direction = 1 # Start off going right
+    i, j = 0, -1
+    output = []
+    while m*n > 0:
+      for _ in range(n): # move horizontally
+        j += direction
+        output.append(matrix[i][j])
+      m-= 1
+      for _ in range(m): # move vertically
+        i += direction
+        output.append(matrix[i][j])
+      n-=1
+      direction *= -1 # flip direction
+    return output
