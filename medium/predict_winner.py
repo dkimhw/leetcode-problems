@@ -45,13 +45,13 @@ But the issue is the logic around is there an optimal way to choose that will le
   - Fallback - recursion that takes all combinations to see if there is a path for player 1 to win
 
 
-[1,5,200, 100 ,10,2]
+[1,5,200, 100, 2]
 
 player 1 takes 2
 player 2 takes  [1, 5, 200, 100] - 100
 player 1 takes [1, 5, 200] - 200
 
-Algorthim (greedy)
+Algorthim (greedy) - does not work
 1. Create two variables player1 = true; player2 = false; player1_score = 0; player2_score = 0
 2. Run a while loop until arr is not empty
   - if player1:
@@ -67,6 +67,59 @@ Algorthim (greedy)
 3. If player1_score >= player2_score:
   - return true else false
 
+Algorthim (recursion) - brute force
 
+Helper function
+1. Base case
+  - if left_idx > right_idx and player1_score >= player2_score:
+    return true
+  - if left_idx > right_idx  and player1_score < player2_score:
+    return false
+2. Args:
+  - way to tell curr player's turn
+  - players' scores
+  - curr indexes (choices available to curr player)
+3. Initial call
+  - predictTheWinnerRecursionHelper('player1', 0, 0, 0, len(nums) - 1)
+4. Within Recursion - call twice
+  - is_true = predictTheWinnerRecursionHelper('player1', 3, 0, 1, len(nums) - 1)
+  - is_true = predictTheWinnerRecursionHelper('player1', 3, 0, 0, len(nums) - 2)
+5. return is_true
+
+The issue with brute force is that there is almost always a way for player1 to win if player2 plays suboptimally
 
 """
+from typing import List
+
+class Solution:
+  def predictTheWinner(self, nums: List[int]) -> bool:
+    def predictTheWinnerRecursionHelper(player_turn: str, player1_score: int, player2_score: int, left_idx: int, right_idx: int):
+      if left_idx > right_idx:
+        print("hello2", player1_score, " - ", player2_score)
+        if player1_score >= player2_score:
+          return True
+        else:
+          print("here")
+          return False
+
+      next_player = 'player1' if player_turn == 'player2' else 'player2'
+      # print("next player", next_player)
+      # print("player1_score", player1_score)
+      # print("player2_score", player2_score)
+      is_true = None
+      if player_turn == 'player1':
+        is_true = predictTheWinnerRecursionHelper(next_player, player1_score + nums[left_idx], player2_score, left_idx + 1, right_idx)
+        is_true = predictTheWinnerRecursionHelper(next_player, player1_score + nums[right_idx], player2_score, left_idx, right_idx - 1)
+      else:
+        is_true = predictTheWinnerRecursionHelper(next_player, player1_score, player2_score + nums[left_idx], left_idx + 1, right_idx)
+        is_true = predictTheWinnerRecursionHelper(next_player, player1_score, player2_score + nums[right_idx], left_idx, right_idx - 1)
+      return is_true
+
+    predictTheWinnerRecursionHelper('player1', 0, 0, 0, len(nums) - 1)
+
+
+
+
+sol = Solution()
+print(sol.predictTheWinner([1,5,2])) # false
+# print(sol.predictTheWinner([1,5,233,7])) # true
