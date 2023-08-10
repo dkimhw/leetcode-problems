@@ -68,58 +68,52 @@ Algorthim (greedy) - does not work
   - return true else false
 
 Algorthim (recursion) - brute force
+- The optimal play here is to optimize the score difference between the two players
 
 Helper function
 1. Base case
-  - if left_idx > right_idx and player1_score >= player2_score:
-    return true
-  - if left_idx > right_idx  and player1_score < player2_score:
-    return false
+  - if left_idx > right_idx:
+    return
 2. Args:
-  - way to tell curr player's turn
-  - players' scores
   - curr indexes (choices available to curr player)
-3. Initial call
-  - predictTheWinnerRecursionHelper('player1', 0, 0, 0, len(nums) - 1)
-4. Within Recursion - call twice
-  - is_true = predictTheWinnerRecursionHelper('player1', 3, 0, 1, len(nums) - 1)
-  - is_true = predictTheWinnerRecursionHelper('player1', 3, 0, 0, len(nums) - 2)
-5. return is_true
+3. Initial call in main function
+  - maximizeScore(0, len(nums) - 1)
+4. Within Recursion - call twice because player1 has two choices
+  - take_left = nums[left_idx] - maximizeScore(left_idx + 1, right_idx)
+  - take_right = nums[right_idx] - maximizeScore(left_idx, right_idx - 1)
+5. return maximizeScore(take_left, take_right)
 
 The issue with brute force is that there is almost always a way for player1 to win if player2 plays suboptimally
+
+
+
 
 """
 from typing import List
 
 class Solution:
   def predictTheWinner(self, nums: List[int]) -> bool:
-    def predictTheWinnerRecursionHelper(player_turn: str, player1_score: int, player2_score: int, left_idx: int, right_idx: int):
+    memoize = {}
+    def maximizeScore(left_idx: int, right_idx: int):
+      if (left_idx, right_idx) in memoize:
+        return memoize[(left_idx, right_idx)]
+
+      if (left_idx == right_idx):
+        return nums[left_idx]
+
       if left_idx > right_idx:
-        print("hello2", player1_score, " - ", player2_score)
-        if player1_score >= player2_score:
-          return True
-        else:
-          print("here")
-          return False
+        return 0
+      take_left = nums[left_idx] - maximizeScore(left_idx + 1, right_idx)
+      take_right = nums[right_idx] - maximizeScore(left_idx, right_idx - 1)
+      # print(left_idx, ' - ', right_idx, ' - ',  take_left, ' - ', take_right, ' - ', nums[left_idx])
 
-      next_player = 'player1' if player_turn == 'player2' else 'player2'
-      # print("next player", next_player)
-      # print("player1_score", player1_score)
-      # print("player2_score", player2_score)
-      is_true = None
-      if player_turn == 'player1':
-        is_true = predictTheWinnerRecursionHelper(next_player, player1_score + nums[left_idx], player2_score, left_idx + 1, right_idx)
-        is_true = predictTheWinnerRecursionHelper(next_player, player1_score + nums[right_idx], player2_score, left_idx, right_idx - 1)
-      else:
-        is_true = predictTheWinnerRecursionHelper(next_player, player1_score, player2_score + nums[left_idx], left_idx + 1, right_idx)
-        is_true = predictTheWinnerRecursionHelper(next_player, player1_score, player2_score + nums[right_idx], left_idx, right_idx - 1)
-      return is_true
+      return max(take_left, take_right)
 
-    predictTheWinnerRecursionHelper('player1', 0, 0, 0, len(nums) - 1)
+    return maximizeScore(0, len(nums) - 1) >= 0
 
 
 
 
 sol = Solution()
-print(sol.predictTheWinner([1,5,2])) # false
-# print(sol.predictTheWinner([1,5,233,7])) # true
+# print(sol.predictTheWinner([1,5,2])) # false
+print(sol.predictTheWinner([1,5,233,7])) # true
