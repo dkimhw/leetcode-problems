@@ -110,10 +110,3 @@ class Solution:
       return max(take_left, take_right)
 
     return maximizeScore(0, len(nums) - 1) >= 0
-
-
-
-
-sol = Solution()
-# print(sol.predictTheWinner([1,5,2])) # false
-print(sol.predictTheWinner([1,5,233,7])) # true
