@@ -56,16 +56,32 @@ Optimization
 [1, 2, 3, 90000]
 
 90000 so we need at least t = 90000
-tripLength = 95000d
+tripLength = 95000
 
 
 [9,3,10,5], 2
 
-So above optimization does not work for this scenario right
-
+So above optimization does not work for this scenario
 current_time = max(time) if max(time) < tripLength else min(time)
 
 
+New Approach
+----------------
+From 1 to worst case time. The worst case here is: highest time[i] * time duration
+  - i.e. [90000], 2 = 180000
+
+Search between 1 to worst case for the minimum time to satisfy the trip
+  - time = [1,2,3], totalTrips = 5; 3
+  - Search between 1 to 15
+    - midpoint: 7
+    - if midpoint can be re-created using [1, 2, 3]
+      - then we want to look at the left side of the array
+    - else we want to look at the right side of the array
+  - Helper function to check if midpoint can be recreated
+    - declare variable result
+    - loop through `time`
+      - add to result math.floor(time[i] / midpoint)
+    - return result == midpoint
 """
 from typing import List
 
@@ -91,4 +107,4 @@ class Solution:
 
 sol = Solution()
 # print(sol.minimumTime([1,2,3], 5))
-print(sol.minimumTime([9,3,10,5], 2))
+print(sol.minimumTime([9,3,10,5], 2)) # 5
