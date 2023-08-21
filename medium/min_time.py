@@ -47,7 +47,7 @@ t % times[i] == 0 then completed[i] =  t / times[i]
 curr_total += how many trips were completed so far
 
 
-Optimization
+Optimization Ideas
 ----------------
 
 - maybe we can find the largest number and use that as the base
@@ -61,8 +61,10 @@ tripLength = 95000
 
 [9,3,10,5], 2
 
-So above optimization does not work for this scenario
-current_time = max(time) if max(time) < tripLength else min(time)
+So above optimization does not work for this scenario.
+
+I think the search area has to be from 1 to the worst case which is taking the worst time possible for
+a bus trip * the total trips.
 
 
 New Approach
@@ -71,40 +73,54 @@ From 1 to worst case time. The worst case here is: highest time[i] * time durati
   - i.e. [90000], 2 = 180000
 
 Search between 1 to worst case for the minimum time to satisfy the trip
+  - Binary search
   - time = [1,2,3], totalTrips = 5; 3
   - Search between 1 to 15
     - midpoint: 7
     - if midpoint can be re-created using [1, 2, 3]
       - then we want to look at the left side of the array
     - else we want to look at the right side of the array
+    - here midpoint does not matter - because it might not be the "minimum time" - I need the binary serach to run to the end
   - Helper function to check if midpoint can be recreated
     - declare variable result
     - loop through `time`
       - add to result math.floor(time[i] / midpoint)
-    - return result == midpoint
 """
 from typing import List
 
 class Solution:
-  def minimumTime(self, time: List[int], totalTrips: int) -> int:
-    current_time = max(time) if max(time) < totalTrips else min(time)
-    # print(current_time)
-    curr_trip_total = 0
-    completed = [0] * len(time)
-    while True:
-      # need to optimize this
-      curr_trip_total = 0
-      for idx in range(len(completed)):
-        completed[idx] = int(current_time / time[idx]) # if current_time % time[idx] == 0 else completed[idx]
-        curr_trip_total += completed[idx]
-      # print(completed)
-      if curr_trip_total >= totalTrips:
-        break
-      current_time += 1
+  def isTripPossible(self, time: List[int], totalTrips: int, minTime: int) -> bool:
+    result = 0
+    for t in time:
+      print(t, minTime)
+      result += (minTime // t)
+    return result >= minTime
 
-    return current_time
+  def minimumTime(self, time: List[int], totalTrips: int) -> int:
+    left = 0
+    right = max(time) * totalTrips
+    curr_min_time = 0
+    cnt = 0
+
+    while cnt < 3:
+      midpoint = (left + right) // 2
+      # if midpoint that I chose was a time that is possible given time & totalTrips, I want to go left
+      is_possible = self.isTripPossible(time, totalTrips, midpoint) # need function here
+      if is_possible:
+        right = midpoint
+        curr_min_time = midpoint
+      else:
+        left = midpoint
+      print("is possible", is_possible)
+      print("midpoint", midpoint)
+      print(left, right)
+      cnt += 1
+
+
+
 
 
 sol = Solution()
-# print(sol.minimumTime([1,2,3], 5))
-print(sol.minimumTime([9,3,10,5], 2)) # 5
+# print(sol.isTripPossible([1,2,3], 5, 3))
+print(sol.minimumTime([1,2,3], 5))
+# print(sol.minimumTime([9,3,10,5], 2)) # 5
