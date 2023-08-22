@@ -77,10 +77,10 @@ Search between 1 to worst case for the minimum time to satisfy the trip
   - time = [1,2,3], totalTrips = 5; 3
   - Search between 1 to 15
     - midpoint: 7
-    - if midpoint can be re-created using [1, 2, 3]
-      - then we want to look at the left side of the array
-    - else we want to look at the right side of the array
-    - here midpoint does not matter - because it might not be the "minimum time" - I need the binary serach to run to the end
+    - Found how many trips were made using t = 7
+      - if this number was > totalTrips - we want to look at the left side of the array
+      - else we want to look at the right side of the array
+    - here midpoint is when trips == totalTrips
   - Helper function to check if midpoint can be recreated
     - declare variable result
     - loop through `time`
@@ -92,9 +92,8 @@ class Solution:
   def isTripPossible(self, time: List[int], totalTrips: int, minTime: int) -> bool:
     result = 0
     for t in time:
-      print(t, minTime)
       result += (minTime // t)
-    return result >= minTime
+    return result
 
   def minimumTime(self, time: List[int], totalTrips: int) -> int:
     left = 0
@@ -102,19 +101,23 @@ class Solution:
     curr_min_time = 0
     cnt = 0
 
-    while cnt < 3:
+    #while left < right:
+    while cnt < 7:
       midpoint = (left + right) // 2
       # if midpoint that I chose was a time that is possible given time & totalTrips, I want to go left
-      is_possible = self.isTripPossible(time, totalTrips, midpoint) # need function here
-      if is_possible:
+      trips = self.isTripPossible(time, totalTrips, midpoint) # need function here
+      if trips == totalTrips:
+        return midpoint
+      elif trips >= totalTrips:
         right = midpoint
         curr_min_time = midpoint
       else:
         left = midpoint
-      print("is possible", is_possible)
+      print("is possible", trips)
       print("midpoint", midpoint)
       print(left, right)
       cnt += 1
+    print("curr_min_time", curr_min_time)
 
 
 
@@ -122,5 +125,6 @@ class Solution:
 
 sol = Solution()
 # print(sol.isTripPossible([1,2,3], 5, 3))
+# print(sol.isTripPossible([1,2,3], 5, 0))
 print(sol.minimumTime([1,2,3], 5))
 # print(sol.minimumTime([9,3,10,5], 2)) # 5
