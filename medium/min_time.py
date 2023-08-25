@@ -85,39 +85,38 @@ Search between 1 to worst case for the minimum time to satisfy the trip
     - declare variable result
     - loop through `time`
       - add to result math.floor(time[i] / midpoint)
+
+Time complexity: O(n⋅log(m⋅k))
+
+We set the right boundary of the searching space as m⋅k.
+
+The searching space is cut by half each time, thus it takes O(log(m⋅k))steps to finish the binary search.
+In each step, we iterate the entire array time to calculate the number of trips made in the given time,
+it takes O(n) time.
 """
 from typing import List
 
 class Solution:
-  def isTripPossible(self, time: List[int], totalTrips: int, minTime: int) -> bool:
+  def numOfTrips(self, time: List[int], minTime: int) -> bool:
     result = 0
     for t in time:
       result += (minTime // t)
     return result
 
   def minimumTime(self, time: List[int], totalTrips: int) -> int:
-    left = 0
+    left = 1
     right = max(time) * totalTrips
-    curr_min_time = 0
-    cnt = 0
 
-    #while left < right:
-    while cnt < 7:
+    while left < right:
       midpoint = (left + right) // 2
       # if midpoint that I chose was a time that is possible given time & totalTrips, I want to go left
-      trips = self.isTripPossible(time, totalTrips, midpoint) # need function here
-      if trips == totalTrips:
-        return midpoint
-      elif trips >= totalTrips:
+      trips = self.numOfTrips(time, midpoint)
+      if trips >= totalTrips:
         right = midpoint
-        curr_min_time = midpoint
       else:
-        left = midpoint
-      print("is possible", trips)
-      print("midpoint", midpoint)
-      print(left, right)
-      cnt += 1
-    print("curr_min_time", curr_min_time)
+        left = midpoint + 1
+
+    return left
 
 
 
@@ -125,6 +124,7 @@ class Solution:
 
 sol = Solution()
 # print(sol.isTripPossible([1,2,3], 5, 3))
-# print(sol.isTripPossible([1,2,3], 5, 0))
-print(sol.minimumTime([1,2,3], 5))
-# print(sol.minimumTime([9,3,10,5], 2)) # 5
+# print(sol.numOfTrips([2], 2))
+print(sol.minimumTime([1,2,3], 5)) # 3
+print(sol.minimumTime([9,3,10,5], 2)) # 5
+print(sol.minimumTime([2], 1)) # 2
