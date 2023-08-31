@@ -32,7 +32,7 @@ Input: n = 1
 Output: 1
 
 
-Algorithm 1st Attempt - O(n^2):
+Algorithm O(n^2):
 --------------
 1. Create a n-size array of 0s
 2. Loop n times
@@ -41,8 +41,6 @@ Algorithm 1st Attempt - O(n^2):
   - For example: 0th iteration - you toggle every bulb
 3. return sum(arr)
 
-
-Is there a better way to do this?
 """
 
 class Solution:
